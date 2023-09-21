@@ -5,6 +5,11 @@ from lwe.core.provider import Provider, PresetValue
 
 class CustomChatAnthropic(ChatAnthropic):
 
+    # TODO: Remove this when https://github.com/langchain-ai/langchain/issues/10909 is fixed
+    @property
+    def _identifying_params(self):
+        return self._default_params
+
     @property
     def _llm_type(self):
         """Return type of llm."""
