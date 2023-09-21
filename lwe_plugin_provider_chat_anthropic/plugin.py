@@ -28,6 +28,7 @@ class ProviderChatAnthropic(Provider):
     @property
     def capabilities(self):
         return {
+            "chat": True,
             'validate_models': True,
             'models': {
                 'claude-instant-1': {
