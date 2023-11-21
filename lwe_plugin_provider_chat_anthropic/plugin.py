@@ -32,10 +32,16 @@ class ProviderChatAnthropic(Provider):
             'validate_models': True,
             'models': {
                 'claude-instant-1': {
-                    'max_tokens': 100000,
+                    'max_tokens': 102400,
+                },
+                'claude-instant-1.2': {
+                    'max_tokens': 102400,
                 },
                 'claude-2': {
-                    'max_tokens': 100000,
+                    'max_tokens': 102400,
+                },
+                'claude-2.1': {
+                    'max_tokens': 204800,
                 },
             },
         }
