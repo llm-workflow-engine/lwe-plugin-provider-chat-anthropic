@@ -1,6 +1,10 @@
+import json
 from langchain.chat_models.anthropic import ChatAnthropic
 
 from lwe.core.provider import Provider, PresetValue
+from lwe.core import util
+
+from anthropic import Anthropic
 
 
 class CustomChatAnthropic(ChatAnthropic):
@@ -20,6 +24,10 @@ class ProviderChatAnthropic(Provider):
     """
     Access to chat Anthropic models
     """
+
+    def __init__(self, config=None):
+        super().__init__(config)
+        self.client = Anthropic()
 
     @property
     def model_property_name(self):
@@ -71,3 +79,23 @@ class ProviderChatAnthropic(Provider):
                 "stop_sequences": PresetValue(str, include_none=True),
             },
         }
+
+    def get_num_tokens_from_messages(self, messages, encoding=None):
+        """
+        Get number of tokens for a list of messages.
+
+        :param messages: List of messages
+        :type messages: list
+        :param encoding: Encoding to use, currently ignored
+        :type encoding: Encoding, optional
+        :returns: Number of tokens
+        :rtype: int
+        """
+        num_tokens = 0
+        messages = util.transform_messages_to_chat_messages(messages)
+        for message in messages:
+            for value in message.values():
+                if isinstance(value, dict):
+                    value = json.dumps(value, indent=2)
+                num_tokens += self.client.count_tokens(value)
+        return num_tokens
