@@ -1,5 +1,5 @@
 import json
-from langchain.chat_models.anthropic import ChatAnthropic
+from langchain_community.chat_models.anthropic import ChatAnthropic
 
 from lwe.core.provider import Provider, PresetValue
 from lwe.core import util
