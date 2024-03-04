@@ -1,18 +1,26 @@
 import json
-from langchain_community.chat_models.anthropic import ChatAnthropic
+from langchain_anthropic import ChatAnthropic
+from langchain_core.pydantic_v1 import Field
 
 from lwe.core.provider import Provider, PresetValue
 from lwe.core import util
 
 from anthropic import Anthropic
 
+ANTHROPIC_DEFAULT_MODEL = 'claude-2.1'
+
 
 class CustomChatAnthropic(ChatAnthropic):
 
-    # TODO: Remove this when https://github.com/langchain-ai/langchain/issues/10909 is fixed
+    model: str = Field(alias="model_name", default=ANTHROPIC_DEFAULT_MODEL)
+    """Model name to use."""
+
     @property
     def _identifying_params(self):
-        return self._default_params
+        return {
+            'model': self.model,
+            'max_tokens': self.max_tokens,
+        }
 
     @property
     def _llm_type(self):
@@ -39,9 +47,6 @@ class ProviderChatAnthropic(Provider):
             "chat": True,
             'validate_models': True,
             'models': {
-                'claude-instant-1': {
-                    'max_tokens': 102400,
-                },
                 'claude-instant-1.2': {
                     'max_tokens': 102400,
                 },
@@ -51,12 +56,18 @@ class ProviderChatAnthropic(Provider):
                 'claude-2.1': {
                     'max_tokens': 204800,
                 },
+                'claude-3-opus-20240229': {
+                    'max_tokens': 204800,
+                },
+                'claude-3-sonnet-20240229': {
+                    'max_tokens': 204800,
+                },
             },
         }
 
     @property
     def default_model(self):
-        return 'claude-2'
+        return ANTHROPIC_DEFAULT_MODEL
 
     def prepare_messages_method(self):
         return self.prepare_messages_for_llm_chat
@@ -67,7 +78,7 @@ class ProviderChatAnthropic(Provider):
     def customization_config(self):
         return {
             'model': PresetValue(str, options=self.available_models),
-            'max_tokens_to_sample': PresetValue(int, min_value=1, include_none=True),
+            'max_tokens': PresetValue(int, min_value=1, include_none=True),
             'temperature': PresetValue(float, min_value=0.0, max_value=1.0),
             'top_k': PresetValue(int, min_value=1, max_value=40),
             'top_p': PresetValue(float, min_value=0.0, max_value=1.0),
