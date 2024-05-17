@@ -88,6 +88,8 @@ class ProviderChatAnthropic(Provider):
             'default_request_timeout': PresetValue(float, min_value=1.0),
             'anthropic_api_key': PresetValue(str, include_none=True),
             'anthropic_api_url': PresetValue(str, include_none=True),
+            "tools": None,
+            "tool_choice": None,
             "model_kwargs": {
                 "metadata": dict,
                 "stop_sequences": PresetValue(str, include_none=True),
@@ -109,7 +111,11 @@ class ProviderChatAnthropic(Provider):
         messages = util.transform_messages_to_chat_messages(messages)
         for message in messages:
             for value in message.values():
-                if isinstance(value, dict):
+                if isinstance(value, dict) or isinstance(value, list):
                     value = json.dumps(value, indent=2)
-                num_tokens += self.client.count_tokens(value)
+                if value:
+                    num_tokens += self.client.count_tokens(value)
+        # TODO: Missing counting of tokens for tool calls
+        # This should probably be removed when token counting
+        # is improved.
         return num_tokens
