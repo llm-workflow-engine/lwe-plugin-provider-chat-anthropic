@@ -33,8 +33,8 @@ class ProviderChatAnthropic(Provider):
     Access to chat Anthropic models
     """
 
-    def __init__(self, config=None):
-        super().__init__(config)
+    def __init__(self, config=None, **kwargs):
+        super().__init__(config, **kwargs)
         self.client = Anthropic()
 
     @property
@@ -46,34 +46,37 @@ class ProviderChatAnthropic(Provider):
         return {
             "chat": True,
             'validate_models': True,
-            'models': {
-                'claude-instant-1.2': {
-                    'max_tokens': 102400,
-                },
-                'claude-2': {
-                    'max_tokens': 102400,
-                },
-                'claude-2.1': {
-                    'max_tokens': 204800,
-                },
-                'claude-3-opus-20240229': {
-                    'max_tokens': 204800,
-                },
-                'claude-3-sonnet-20240229': {
-                    'max_tokens': 204800,
-                },
-                'claude-3-haiku-20240307': {
-                    'max_tokens': 204800,
-                },
-                'claude-3-5-sonnet-20240620': {
-                    'max_tokens': 204800,
-                },
-            },
         }
 
     @property
     def default_model(self):
         return ANTHROPIC_DEFAULT_MODEL
+
+    @property
+    def static_models(self):
+        return {
+            'claude-instant-1.2': {
+                'max_tokens': 102400,
+            },
+            'claude-2': {
+                'max_tokens': 102400,
+            },
+            'claude-2.1': {
+                'max_tokens': 204800,
+            },
+            'claude-3-opus-20240229': {
+                'max_tokens': 204800,
+            },
+            'claude-3-sonnet-20240229': {
+                'max_tokens': 204800,
+            },
+            'claude-3-haiku-20240307': {
+                'max_tokens': 204800,
+            },
+            'claude-3-5-sonnet-20240620': {
+                'max_tokens': 204800,
+            },
+        }
 
     def prepare_messages_method(self):
         return self.prepare_messages_for_llm_chat
