@@ -1,6 +1,6 @@
 import json
 from langchain_anthropic import ChatAnthropic
-from langchain_core.pydantic_v1 import Field
+from pydantic import Field
 
 from lwe.core.provider import Provider, PresetValue
 from lwe.core import util
