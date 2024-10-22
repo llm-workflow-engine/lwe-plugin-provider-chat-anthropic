@@ -76,6 +76,12 @@ class ProviderChatAnthropic(Provider):
             'claude-3-5-sonnet-20240620': {
                 'max_tokens': 204800,
             },
+            'claude-3-5-sonnet-20241022': {
+                'max_tokens': 204800,
+            },
+            'claude-3-5-sonnet-latest': {
+                'max_tokens': 204800,
+            },
         }
 
     def prepare_messages_method(self):
