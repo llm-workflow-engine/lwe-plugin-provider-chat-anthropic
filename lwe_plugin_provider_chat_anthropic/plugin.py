@@ -73,6 +73,12 @@ class ProviderChatAnthropic(Provider):
             'claude-3-haiku-20240307': {
                 'max_tokens': 204800,
             },
+            'claude-3-5-haiku-20241022': {
+                'max_tokens': 204800,
+            },
+            'claude-3-5-haiku-latest': {
+                'max_tokens': 204800,
+            },
             'claude-3-5-sonnet-20240620': {
                 'max_tokens': 204800,
             },
