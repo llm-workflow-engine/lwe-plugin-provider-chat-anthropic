@@ -114,26 +114,28 @@ class ProviderChatAnthropic(Provider):
             },
         }
 
-    def get_num_tokens_from_messages(self, messages, encoding=None):
-        """
-        Get number of tokens for a list of messages.
-
-        :param messages: List of messages
-        :type messages: list
-        :param encoding: Encoding to use, currently ignored
-        :type encoding: Encoding, optional
-        :returns: Number of tokens
-        :rtype: int
-        """
-        num_tokens = 0
-        messages = util.transform_messages_to_chat_messages(messages)
-        for message in messages:
-            for value in message.values():
-                if isinstance(value, dict) or isinstance(value, list):
-                    value = json.dumps(value, indent=2)
-                if value:
-                    num_tokens += self.client.count_tokens(value)
-        # TODO: Missing counting of tokens for tool calls
-        # This should probably be removed when token counting
-        # is improved.
-        return num_tokens
+    # NOTE: The Anthropic SDK removed client.count_tokens(), so this is disabled
+    #       until another method can be implemented.
+    # def get_num_tokens_from_messages(self, messages, encoding=None):
+    #     """
+    #     Get number of tokens for a list of messages.
+    #
+    #     :param messages: List of messages
+    #     :type messages: list
+    #     :param encoding: Encoding to use, currently ignored
+    #     :type encoding: Encoding, optional
+    #     :returns: Number of tokens
+    #     :rtype: int
+    #     """
+    #     num_tokens = 0
+    #     messages = util.transform_messages_to_chat_messages(messages)
+    #     for message in messages:
+    #         for value in message.values():
+    #             if isinstance(value, dict) or isinstance(value, list):
+    #                 value = json.dumps(value, indent=2)
+    #             if value:
+    #                 num_tokens += self.client.count_tokens(value)
+    #     # TODO: Missing counting of tokens for tool calls
+    #     # This should probably be removed when token counting
+    #     # is improved.
+    #     return num_tokens
