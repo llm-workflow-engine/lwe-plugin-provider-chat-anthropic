@@ -1,4 +1,5 @@
 import json
+from langchain_core.messages import AIMessage, AIMessageChunk
 from langchain_anthropic import ChatAnthropic
 from pydantic import Field
 
@@ -118,7 +119,54 @@ class ProviderChatAnthropic(Provider):
                 "metadata": dict,
                 "stop_sequences": PresetValue(str, include_none=True),
             },
+            "thinking": {
+                "type": PresetValue(str, options=["enabled"], include_none=True),
+                "budget_tokens": PresetValue(int, min_value=1, include_none=True),
+            },
         }
+
+
+    def format_thinking_content(self, content: list[dict[str, str]], mode: str = ""):
+        output = ""
+        for part in content:
+            if 'thinking' in part:
+                if mode != "thinking":
+                    mode = "thinking"
+                    output += "[THINKING]\n\n"
+                output += part['thinking']
+            elif 'text' in part:
+                if mode != "text":
+                    mode = "text"
+                    output += "\n\n[ANSWER]\n\n"
+                output += part['text']
+        return output
+
+    def handle_non_streaming_response(self, response: AIMessage):
+        if isinstance(response.content, list):
+            response.content = self.format_thinking_content(response.content)
+        return response
+
+    def handle_streaming_chunk(self, chunk: AIMessageChunk | str, previous_chunks: list[AIMessageChunk | str]) -> str:
+        if isinstance(chunk, str):
+            return chunk
+        elif isinstance(chunk.content, str):
+            return chunk.content
+        return self.handle_streaming_thinking_chunk(chunk, previous_chunks)
+
+    def get_last_streaming_mode(self, previous_chunks: list[AIMessageChunk | str]) -> str:
+        for chunk in reversed(previous_chunks):
+            if isinstance(chunk, AIMessageChunk):
+                content = chunk.content
+                if isinstance(content, list):
+                    for part in reversed(content):
+                        if part['type'] in ['thinking', 'text']:
+                            return part['type']
+        return ""
+
+    def handle_streaming_thinking_chunk(self, chunk: AIMessageChunk, previous_chunks: list[AIMessageChunk | str]) -> str:
+        mode = self.get_last_streaming_mode(previous_chunks)
+        output = self.format_thinking_content(chunk.content, mode)
+        return output
 
     # NOTE: The Anthropic SDK removed client.count_tokens(), so this is disabled
     #       until another method can be implemented.
