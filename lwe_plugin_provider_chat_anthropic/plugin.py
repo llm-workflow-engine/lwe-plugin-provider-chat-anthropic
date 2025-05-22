@@ -95,6 +95,18 @@ class ProviderChatAnthropic(Provider):
             'claude-3-7-sonnet-latest': {
                 'max_tokens': 204800,
             },
+            'claude-sonnet-4-20250514': {
+                'max_tokens': 204800,
+            },
+            'claude-sonnet-4-0': {
+                'max_tokens': 204800,
+            },
+            'claude-opus-4-20250514': {
+                'max_tokens': 204800,
+            },
+            'claude-opus-4-0': {
+                'max_tokens': 204800,
+            },
         }
 
     def prepare_messages_method(self):
@@ -161,7 +173,7 @@ class ProviderChatAnthropic(Provider):
                     for part in reversed(content):
                         if part['type'] in ['thinking', 'text']:
                             return part['type']
-        return ""
+        return "text"
 
     def handle_streaming_thinking_chunk(self, chunk: AIMessageChunk, previous_chunks: list[AIMessageChunk | str]) -> str:
         mode = self.get_last_streaming_mode(previous_chunks)
