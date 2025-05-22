@@ -1,1 +1,1 @@
-langchain-anthropic>=0.3.8
+langchain-anthropic>=0.3.13
