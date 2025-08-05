@@ -107,6 +107,12 @@ class ProviderChatAnthropic(Provider):
             'claude-opus-4-0': {
                 'max_tokens': 204800,
             },
+            'claude-opus-4-1-20250805': {
+                'max_tokens': 204800,
+            },
+            'claude-opus-4-1': {
+                'max_tokens': 204800,
+            },
         }
 
     def prepare_messages_method(self):
