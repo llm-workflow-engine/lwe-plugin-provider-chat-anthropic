@@ -96,10 +96,10 @@ class ProviderChatAnthropic(Provider):
                 'max_tokens': 204800,
             },
             'claude-sonnet-4-20250514': {
-                'max_tokens': 204800,
+                'max_tokens': 1048576,
             },
             'claude-sonnet-4-0': {
-                'max_tokens': 204800,
+                'max_tokens': 1048576,
             },
             'claude-opus-4-20250514': {
                 'max_tokens': 204800,
