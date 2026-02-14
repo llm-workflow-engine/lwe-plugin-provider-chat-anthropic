@@ -131,6 +131,9 @@ class ProviderChatAnthropic(Provider):
             'claude-opus-4-5': {
                 'max_tokens': 204800,
             },
+            'claude-opus-4-6': {
+                'max_tokens': 1048576,
+            },
         }
 
     def prepare_messages_method(self):
@@ -156,9 +159,11 @@ class ProviderChatAnthropic(Provider):
                 "stop_sequences": PresetValue(str, include_none=True),
             },
             "thinking": {
-                "type": PresetValue(str, options=["enabled"], include_none=True),
+                "type": PresetValue(str, options=["enabled", "adaptive"], include_none=True),
                 "budget_tokens": PresetValue(int, min_value=1, include_none=True),
             },
+            "effort": PresetValue(str, options=["low", "medium", "high", "max"], include_none=True),
+            "mcp_servers": dict,
         }
 
 
