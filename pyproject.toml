@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lwe-plugin-provider-chat-anthropic"
+dynamic = ["version"]
+description = "LWE plugin: Chat Anthropic Provider plugin"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+  { name = "Chad Phillips", email = "chad@apartmentlines.com" },
+]
+dependencies = [
+  "langchain-anthropic>=1.3.3",
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/llm-workflow-engine/lwe-plugin-provider-chat-anthropic"
+Repository = "https://github.com/llm-workflow-engine/lwe-plugin-provider-chat-anthropic"
+
+[project.entry-points."lwe_plugins"]
+lwe_plugin_provider_chat_anthropic = "lwe_plugin_provider_chat_anthropic.plugin:ProviderChatAnthropic"
+
+[tool.setuptools.dynamic]
+version = { attr = "lwe_plugin_provider_chat_anthropic.version.__version__" }
+
+[tool.setuptools.packages.find]
+include = ["lwe_plugin_provider_chat_anthropic*"]
