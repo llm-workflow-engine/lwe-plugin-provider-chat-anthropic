@@ -168,7 +168,7 @@ class ProviderChatAnthropic(Provider):
                 "type": PresetValue(str, options=["enabled", "adaptive"], include_none=True),
                 "budget_tokens": PresetValue(int, min_value=1, include_none=True),
             },
-            "effort": PresetValue(str, options=["low", "medium", "high", "max"], include_none=True),
+            "effort": PresetValue(str, options=["low", "medium", "high", "xhigh", "max"], include_none=True),
             "mcp_servers": dict,
         }
 
