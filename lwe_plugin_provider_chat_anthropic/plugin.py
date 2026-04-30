@@ -1,4 +1,3 @@
-import json
 from langchain_core.messages import AIMessage, AIMessageChunk
 from langchain_anthropic import ChatAnthropic
 from pydantic import Field
@@ -8,7 +7,7 @@ from lwe.core import util
 
 from anthropic import Anthropic
 
-ANTHROPIC_DEFAULT_MODEL = 'claude-2.1'
+ANTHROPIC_DEFAULT_MODEL = 'claude-sonnet-4-6'
 
 
 class CustomChatAnthropic(ChatAnthropic):
@@ -53,94 +52,19 @@ class ProviderChatAnthropic(Provider):
     def default_model(self):
         return ANTHROPIC_DEFAULT_MODEL
 
-    @property
-    def static_models(self):
-        return {
-            'claude-instant-1.2': {
-                'max_tokens': 102400,
-            },
-            'claude-2': {
-                'max_tokens': 102400,
-            },
-            'claude-2.1': {
-                'max_tokens': 204800,
-            },
-            'claude-3-opus-20240229': {
-                'max_tokens': 204800,
-            },
-            'claude-3-sonnet-20240229': {
-                'max_tokens': 204800,
-            },
-            'claude-3-haiku-20240307': {
-                'max_tokens': 204800,
-            },
-            'claude-3-5-haiku-20241022': {
-                'max_tokens': 204800,
-            },
-            'claude-3-5-haiku-latest': {
-                'max_tokens': 204800,
-            },
-            'claude-3-5-sonnet-20240620': {
-                'max_tokens': 204800,
-            },
-            'claude-3-5-sonnet-20241022': {
-                'max_tokens': 204800,
-            },
-            'claude-3-5-sonnet-latest': {
-                'max_tokens': 204800,
-            },
-            'claude-3-7-sonnet-20250219': {
-                'max_tokens': 204800,
-            },
-            'claude-3-7-sonnet-latest': {
-                'max_tokens': 204800,
-            },
-            'claude-sonnet-4-20250514': {
-                'max_tokens': 1048576,
-            },
-            'claude-sonnet-4-0': {
-                'max_tokens': 1048576,
-            },
-            'claude-opus-4-20250514': {
-                'max_tokens': 204800,
-            },
-            'claude-opus-4-0': {
-                'max_tokens': 204800,
-            },
-            'claude-opus-4-1-20250805': {
-                'max_tokens': 204800,
-            },
-            'claude-opus-4-1': {
-                'max_tokens': 204800,
-            },
-            'claude-haiku-4-5': {
-                'max_tokens': 204800,
-            },
-            'claude-haiku-4-5-20251001': {
-                'max_tokens': 204800,
-            },
-            'claude-sonnet-4-5-20250929': {
-                'max_tokens': 1048576,
-            },
-            'claude-sonnet-4-5': {
-                'max_tokens': 1048576,
-            },
-            'claude-sonnet-4-6': {
-                'max_tokens': 1048576,
-            },
-            'claude-opus-4-5-20251101': {
-                'max_tokens': 204800,
-            },
-            'claude-opus-4-5': {
-                'max_tokens': 204800,
-            },
-            'claude-opus-4-6': {
-                'max_tokens': 1048576,
-            },
-            'claude-opus-4-7': {
-                'max_tokens': 1048576,
-            },
-        }
+    def fetch_models(self):
+        try:
+            model_data = self.client.models.list()
+            if not model_data:
+                raise ValueError('Could not retrieve models')
+            models = {
+                model.id: {'max_tokens': model.max_input_tokens}
+                for model in model_data
+                if model.type == "model"
+            }
+            return models
+        except Exception as e:
+            raise ValueError(f"Could not retrieve models: {e}")
 
     def prepare_messages_method(self):
         return self.prepare_messages_for_llm_chat
@@ -168,7 +92,10 @@ class ProviderChatAnthropic(Provider):
                 "type": PresetValue(str, options=["enabled", "adaptive"], include_none=True),
                 "budget_tokens": PresetValue(int, min_value=1, include_none=True),
             },
-            "effort": PresetValue(str, options=["low", "medium", "high", "xhigh", "max"], include_none=True),
+            "output_config": {
+                "effort": PresetValue(str, options=["low", "medium", "high", "xhigh", "max"], include_none=True),
+                "format": dict,
+            },
             "mcp_servers": dict,
         }
 
