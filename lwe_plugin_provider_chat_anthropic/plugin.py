@@ -12,7 +12,7 @@ from pydantic import Field
 from typing_extensions import override
 
 from lwe.core.config import Config
-from lwe.core.provider import Provider, PresetValue
+from lwe.core.provider import PresetValue, Provider
 
 ANTHROPIC_DEFAULT_MODEL = "claude-sonnet-4-6"
 
@@ -110,9 +110,7 @@ class ProviderChatAnthropic(Provider):
                 "type": PresetValue(
                     str, options=["enabled", "adaptive"], include_none=True
                 ),
-                "budget_tokens": PresetValue(
-                    int, min_value=1, include_none=True
-                ),
+                "budget_tokens": PresetValue(int, min_value=1, include_none=True),
             },
             "output_config": {
                 "effort": PresetValue(
