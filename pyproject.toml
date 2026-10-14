@@ -12,12 +12,23 @@ license = "MIT"
 authors = [
   { name = "Chad Phillips", email = "chad@apartmentlines.com" },
 ]
-dependencies = [
-  "langchain-anthropic>=1.4.2",
-]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Operating System :: OS Independent",
+]
+dependencies = [
+  "langchain-anthropic>=1.7.6",
+  "typing-extensions>=4.4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-datadir",
+    "pip-tools",
+    "basedpyright",
+    "flake8",
+    "black",
 ]
 
 [project.urls]
